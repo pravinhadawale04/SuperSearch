@@ -14,8 +14,22 @@ namespace SuperSearch
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
 
+            builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
+
+            var app = builder.Build();
+               
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -29,7 +43,7 @@ namespace SuperSearch
 
 
             app.MapControllers();
-
+            app.UseCors("AllowAllOrigins");
             app.Run();
         }
     }
